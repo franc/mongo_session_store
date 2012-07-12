@@ -1,3 +1,6 @@
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
 source :rubygems
 
 MONGO_VERS = '1.5.2' unless defined? MONGO_VERS
@@ -42,12 +45,12 @@ group :development, :test do
       gem 'mongoid',      '>= 2.2.5'
     else
       # we're running tests on Rails 3.1 or 3.2 on Ruby 1.9
-      gem 'mongoid',      '>= 2.2.5', :git => 'git://github.com/mongoid/mongoid.git'
+      gem 'mongoid',      '>= 3.0.0', :git => 'git://github.com/mongoid/mongoid.git'
     end
   end
 
   gem 'mongo',         MONGO_VERS
-  gem 'bson_ext',      MONGO_VERS
+  gem 'bson_ext',      MONGO_VERS, :lib => false
   
   gem 'system_timer', :platforms => :ruby_18
   gem 'rbx-require-relative', '0.0.5', :platforms => :ruby_18

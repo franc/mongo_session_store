@@ -1,31 +1,40 @@
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
 begin
+  
+  require 'bson'
   require 'mongoid'
+  
   require 'mongo_session_store/mongo_store_base'
 
   module ActionDispatch
     module Session
       class MongoidStore < MongoStoreBase
 
-        class Session
+         class Session
           include Mongoid::Document
           include Mongoid::Timestamps
           self.store_in :collection => MongoSessionStore.collection_name
 
           attr_accessible :_id, :data
 
-          if respond_to?(:identity)
-            # pre-Mongoid 3
-            identity :type => String
-          else
-            field :_id, :type => String
-          end
+          field :_id, :type => String
 
-          field :data, :type => BSON::Binary, :default => BSON::Binary.new(Marshal.dump({}))
+          field :data, :type => String
         end
 
         private
         def pack(data)
-          BSON::Binary.new(Marshal.dump(data))
+          #BSON::Binary.new(Marshal.dump(data))
+          #data.to_hash
+          Marshal.dump(data).to_s
+        end
+
+        def unpack(packed)
+          return nil unless packed
+          #Marshal.load(StringIO.new(packed.to_s))
+          #HashWithIndifferentAccess.new(packed)
+          Marshal.load(packed)
         end
       end
     end
@@ -33,5 +42,5 @@ begin
 
   MongoidStore = ActionDispatch::Session::MongoidStore
 
-rescue LoadError
+#rescue LoadError
 end
